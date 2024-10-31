@@ -7,8 +7,6 @@ using System.Threading.Tasks;
 
 namespace Ejercicio_32
 {
-    public class CalculoMatricula
-    {
         class Program
         {
             static void Main(string[] args)
@@ -17,17 +15,16 @@ namespace Ejercicio_32
 
                 while (repetir)
                 {
+                    Estudiante estudiante = new Estudiante();
+
                     Console.WriteLine("Ingrese el número de créditos del estudiante:");
-                    int creditos = int.Parse(Console.ReadLine());
+                    estudiante.Creditos = int.Parse(Console.ReadLine());
 
                     Console.WriteLine("Ingrese el valor por crédito:");
-                    decimal valorCredito = decimal.Parse(Console.ReadLine());
+                    estudiante.ValorCredito = decimal.Parse(Console.ReadLine());
 
                     Console.WriteLine("Ingrese el estrato del estudiante (1, 2 o 3):");
-                    int estrato = int.Parse(Console.ReadLine());
-
-                    // Crear una instancia de la clase Estudiante
-                    Estudiante estudiante = new Estudiante(creditos, valorCredito, estrato);
+                    estudiante.Estrato = int.Parse(Console.ReadLine());
 
                     decimal costoMatricula = estudiante.CalcularMatricula();
                     decimal subsidio = estudiante.ObtenerSubsidio();
@@ -45,18 +42,39 @@ namespace Ejercicio_32
 
         class Estudiante
         {
-            // Propiedades privadas
-            private int creditos;
-            private decimal valorCredito;
-            private int estrato;
+            // Propiedades públicas
+            public int Creditos {get;set;}
+            public decimal ValorCredito { get; set; }
+            public int Estrato { get; set; }
 
-            // Constructor de la clase Estudiante
-            public Estudiante(int creditos, decimal valorCredito, int estrato)
+            // Método para calcular la matrícula
+            public decimal CalcularMatricula()
             {
-                this.creditos = creditos;
-                this.valorCredito = valorCredito;
-                this.estrato = estrato;
+                decimal costoNormal = Creditos * ValorCredito;
+                decimal costoExtra = (Creditos > 20) ? (Creditos - 20) * ValorCredito * 2 : 0;
+                decimal total = costoNormal + costoExtra;
+
+                decimal descuento = Estrato switch
+                {
+                    1 => 0.80m,
+                    2 => 0.50m,
+                    3 => 0.30m,
+                    _ => 0.0m
+                };
+
+                return total * (1 - descuento);
             }
 
+            // Método para obtener el subsidio
+            public decimal ObtenerSubsidio()
+            {
+                return Estrato switch
+                {
+                    1 => 200000,
+                    2 => 100000,
+                    _ => 0
+                };
+            }
         }
+ 
 }
